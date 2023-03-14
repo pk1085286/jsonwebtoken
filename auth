@@ -1,0 +1,27 @@
+const express = require('express');
+const { Course } = require('../models');
+const authMiddleware = require('../middlewares/auth');
+
+const router = express.Router();
+
+router.get('/', async (req, res) => {
+  // ...
+});
+
+router.post('/', authMiddleware, async (req, res) => {
+  try {
+    const { title, description, instructor } = req.body;
+    const course = await Course.create({
+      title,
+      description,
+      instructor,
+      user: req.user.id,
+    });
+    res.json(course);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+module.exports = router;
